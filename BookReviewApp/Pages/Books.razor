@@ -1,0 +1,31 @@
+﻿@page "/books"
+
+<PageTitle>Book List</PageTitle>
+
+@using BookReviewApp.Data
+@inject BookService bookService
+
+<h3>Book List</h3>
+
+@if (books == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var book in books)
+        {
+            <li>@book.Title by @book.Author</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<Book> books;
+
+    protected override async Task OnInitializedAsync()
+    {
+        books = await bookService.GetBooksAsync();
+    }
+}
