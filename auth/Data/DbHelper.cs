@@ -32,14 +32,14 @@ public class DbHelper
             return connection.Query<T>(query).ToList();
         }
     }
-    public T GetData<T>(string condition, object parameters = null)
+    public T GetData<T>(string tableName, string condition, object parameters = null)
     {
         using (SqlConnection connection = new SqlConnection(connectionString))
         {
             connection.Open();
 
             // Query
-            string query = $"SELECT * FROM {typeof(T).Name}s WHERE {condition}";
+            string query = $"SELECT * FROM {tableName} WHERE {condition}";
             return connection.QueryFirstOrDefault<T>(query, parameters);
         }
     }
