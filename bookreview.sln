@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "api", "auth\api.csproj", "{863627C5-19EE-4072-B8CB-4EBDD0B9D7EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookReviewApp", "BookReviewApp\BookReviewApp.csproj", "{F151A9E1-8BB8-4457-A1B0-F006B61F786E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{863627C5-19EE-4072-B8CB-4EBDD0B9D7EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{863627C5-19EE-4072-B8CB-4EBDD0B9D7EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{863627C5-19EE-4072-B8CB-4EBDD0B9D7EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F151A9E1-8BB8-4457-A1B0-F006B61F786E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F151A9E1-8BB8-4457-A1B0-F006B61F786E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F151A9E1-8BB8-4457-A1B0-F006B61F786E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F151A9E1-8BB8-4457-A1B0-F006B61F786E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
