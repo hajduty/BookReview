@@ -1,10 +1,10 @@
-﻿namespace api.Models.Auth
+﻿namespace api.Models
 {
-    public class Register
+    public class User
     {
-        public int Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
+        public string Admin { get; set; } = "false";
     }
 }

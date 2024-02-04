@@ -1,9 +1,10 @@
-﻿using api.Models;
-using api.Models.Auth;
+﻿using api.Identity;
+using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
+using System.Net;
 
 namespace api.Controllers
 {
@@ -18,21 +19,32 @@ namespace api.Controllers
             _config = config;
         }
 
+        [Authorize(Policy = IdentityData.AdminUserPolicyName)]
         [HttpPost]
         [Route("addbook")]
-        [Authorize(Policy = "LocalhostOnly")]
         public ActionResult<Book> AddBook(Book book)
         {
-            SqlConnection connection = new SqlConnection(_config.GetConnectionString("ReviewAuth").ToString());
+            var jwtToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
 
+            var DataAccess = new DbHelper();
 
+            DataAccess.InsertData(book, "Books");
 
+            // Return a 200 OK response with a message
             return Ok(book);
         }
 
         [HttpGet]
+        [Route("books")]
+        public List<Book> GetBooks()
+        {
+            var dataAccess = new DbHelper();
+            return dataAccess.GetData<Book>();
+        }
+
+        [HttpGet]
         [Route("bookinfo")]  // Include the bookId in the URL
-        public ActionResult<string> GetMessage(string id)
+        public ActionResult<string> BookInfo(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -40,46 +52,12 @@ namespace api.Controllers
                 return BadRequest("Id parameter is required.");
             }
 
-            // Perform your logic here
-            Book book = GetBookFromId(id);
+            var dataAccess = new DbHelper();
+
+            Book book = dataAccess.GetData<Book>("Books", "BookID = @BookID", new { BookID = id });
+
             // Return a 200 OK response with a message
-            return Ok($"");
-        }
-
-        public Book GetBookFromId(string bookId)
-        {
-            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("ReviewAuth").ToString()))
-            {
-                connection.Open();
-
-                string sqlQuery = "SELECT BookID, Author, Title, Description, Rating, PublicationYear " +
-                                  "FROM Books " +
-                                  "WHERE BookID = @BookID;";
-
-                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                {
-                    command.Parameters.AddWithValue("@BookID", bookId);
-
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            return new Book
-                            {
-                                BookID = reader["BookID"].ToString(),
-                                Author = reader["Author"].ToString(),
-                                Title = reader["Title"].ToString(),
-                                Description = reader["Description"].ToString(),
-                                Rating = Convert.ToSingle(reader["Rating"]),
-                                PublicationYear = reader["PublicationYear"].ToString()
-                            };
-                        }
-                    }
-                }
-            }
-
-            // Return null if the book with the given ID is not found
-            return null;
+            return Ok(book);
         }
     }
 }

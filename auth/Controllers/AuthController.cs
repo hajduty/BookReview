@@ -1,4 +1,4 @@
-﻿using api.Models.Auth;
+﻿using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -22,49 +22,47 @@ namespace auth.Controllers
 
         [HttpPost]
         [Route("register")]
-        public Task<ActionResult<Register>> Register(Register registration)
+        public Task<ActionResult<User>> Register(User registration)
         {
-            SqlConnection con = new SqlConnection(_config.GetConnectionString("ReviewAuth").ToString());
+            var data = new DbHelper();
 
-            if (EmailAlreadyExists(registration.Email, con))
+            if (EmailAlreadyExists(registration.Email, data))
             {
-                return Task.FromResult<ActionResult<Register>>(Conflict());
-            }
+                return Task.FromResult<ActionResult<User>>(Conflict());
+            };
 
-            SqlCommand cmd = new("INSERT INTO Registration(username, password, email) VALUES('" + registration.Username + "','" + registration.Password + "','" + registration.Email  + "')", con);
+            User reg = registration;
+            reg.Admin = "false";
 
-            con.Open();
-            int i = cmd.ExecuteNonQuery();
-            con.Close();
+            data.InsertData(reg, "Registers");
 
-            if (i > 0)
-                return Task.FromResult<ActionResult<Register>>(Ok(registration));
-
-            return Task.FromResult<ActionResult<Register>>(BadRequest());
+            return Task.FromResult<ActionResult<User>>(Ok(registration));
         }
 
         [HttpPost]
         [Route("login")]
-        public Task<ActionResult<Login>> Login(Login login)
+        public Task<ActionResult<User>> Login(User login)
         {
-            SqlConnection con = new SqlConnection(_config.GetConnectionString("ReviewAuth").ToString());
+            var data = new DbHelper();
+            User result = data.GetData<User>("Registers","email = @Email", new { Email = login.Email , Password = login.Password});
 
-            SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Registration WHERE email = '" + login.Email + "' AND password = '" + login.Password + "'", con);
-
-            con.Open();
-            int count = (int)cmd.ExecuteScalar();
-            con.Close();
-            if (count > 0)
-                return Task.FromResult<ActionResult<Login>>(Ok(CreateToken(login)));
-
-            return Task.FromResult<ActionResult<Login>>(BadRequest());
+            if (result != null)
+            {
+                return Task.FromResult<ActionResult<User>>(Ok(CreateToken(result)));
+            }
+            return Task.FromResult<ActionResult<User>>(BadRequest());
         }
 
-        private string CreateToken(Login login)
+        private string CreateToken(User user)
         {
+            // Retrieve issuer and audience from appsettings
+            string issuer = _config.GetSection("AppSettings:Issuer").Value;
+            string audience = _config.GetSection("AppSettings:Audience").Value;
+
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, login.Email)
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim("admin", user.Admin)
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
@@ -72,6 +70,8 @@ namespace auth.Controllers
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
                 claims: claims,
                 expires: DateTime.Now.AddDays(1),
                 signingCredentials: cred);
@@ -81,15 +81,11 @@ namespace auth.Controllers
             return jwt;
         }
 
-        private bool EmailAlreadyExists(string email, SqlConnection con)
+        private static bool EmailAlreadyExists(string email, DbHelper data)
         {
-            SqlCommand cmd = new("SELECT COUNT(*) FROM Registration WHERE email = '" + email + "'", con);
+            User result = data.GetData<User>("Registers","email = @Email", new { Email = email });
 
-            con.Open();
-            int count = (int)cmd.ExecuteScalar();
-            con.Close();
-
-            return count > 0;
+            return result != null;
         }
     }
 }
