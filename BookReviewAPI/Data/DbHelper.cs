@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using api.Models;
+using Dapper;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,17 @@ public class DbHelper
             return connection.QueryFirstOrDefault<T>(query, parameters);
         }
     }
+    public Book RandomBook()
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string query = "SELECT TOP 1 * FROM Books ORDER BY NEWID()";
+
+            return connection.QueryFirstOrDefault<Book>(query);
+        }
+    }
     public void DeleteData(int id, string table)
     {
         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -50,7 +62,7 @@ public class DbHelper
             connection.Open();
 
             // Delete
-            string deleteQuery = "DELETE FROM "+table+" WHERE Id = @Id";
+            string deleteQuery = "DELETE FROM " + table + " WHERE Id = @Id";
             connection.Execute(deleteQuery, new { Id = id });
         }
     }
