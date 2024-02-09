@@ -35,6 +35,14 @@ namespace api.Controllers
         }
 
         [HttpGet]
+        [Route("randombook")]
+        public Book RandomBook()
+        {
+            var data = new DbHelper();
+            return data.RandomBook();
+        }
+
+        [HttpGet]
         [Route("books")]
         public List<Book> GetBooks()
         {
