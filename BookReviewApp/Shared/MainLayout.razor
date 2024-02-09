@@ -3,17 +3,23 @@
 <PageTitle>BookReviewApp</PageTitle>
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
     <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
+        <nav class="bg-gray-700">
+            <div class="mx-4 lg:mx-60 h-16 lg:h-32 flex justify-between items-center">
+                <a href="/">
+                    <p class="text-xl lg:text-3xl text-gray-100">BookReviewApp</p>
+                </a>
+                <div class="flex justify-around space-x-4 lg:space-x-8">
+                    <button class="text-sm lg:text-sm bg-gray-800 w-20 rounded-full text-gray-50"><p>Login</p></button>
+                    <button class="text-sm lg:text-sm bg-gray-800 w-20 rounded-full text-gray-50"><p>Register</p></button>
+                    <a href="/books">
+                        <img src="https://placehold.co/128x128" class="w-8 lg:w-12 rounded-full" />
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <div class="">
             @Body
-        </article>
+        </div>
     </main>
 </div>
