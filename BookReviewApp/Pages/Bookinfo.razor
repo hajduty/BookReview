@@ -1,0 +1,23 @@
+﻿@page "/bookinfo/{id}"
+
+<h3>Bookinfo</h3>
+
+@using BookReviewApp.Data
+@inject BookService bookService
+
+@if (book != null)
+{
+    <p>@book.Author @book.Title @book.Description</p>
+}
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+
+    private Book book;
+
+    protected override async Task OnInitializedAsync()
+    {
+        book = await bookService.GetBookFromId(int.Parse(id));
+    }
+}

@@ -14,16 +14,15 @@
                         {
                         <h2 class="text-xl font-bold text-gray-100">@book.Title</h2>
                         <h2 class="text-xl text-gray-200">@book.Description</h2>
+                        <form action="/bookinfo/@book.Id">
+                            <button type="submit" class="borders-2 border-gray-700 bg-gray-700 rounded-full w-40 h-10 text-gray-200">View</button>
+                        </form>
                         }
                         else
                         {
                             <h2 class="text-xl font-bold text-gray-100">Loading</h2>
                             <h2 class="text-xl text-gray-200">....</h2>
                         }
-                    <form action="/bookinfo">
-                        <button type="submit" class="border-2 border-gray-700 bg-gray-700 rounded-full w-40 h-10 text-gray-200">View</button>
-                    </form>
-
                 </div>
             </div>
             <div>
@@ -50,6 +49,6 @@
                 book = await bookService.GetRandomBook();
                 StateHasChanged();
             });
-        }, null, 0, 1000);
+        }, null, 0, 4000);
     }
 }

@@ -8,7 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<BookService>();
-builder.Services.AddScoped<HttpClient>();
+builder.Services.AddHttpClient<BookService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7115/");
+});
+
 
 var app = builder.Build();
 
