@@ -20,5 +20,20 @@ namespace BookReviewApp.Data
             // Replace the endpoint with the actual URL of your books API
             return await _httpClient.GetFromJsonAsync<List<Book>>("https://localhost:7115/api/Book/books");
         }
+
+        public async Task<Book> GetRandomBook()
+        {
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<Book>("https://localhost:7115/api/Book/randombook");
+            }
+            catch (Exception ex)
+            {
+                // Log or handle the exception appropriately
+                Console.WriteLine($"Error fetching random book: {ex.Message}");
+                throw; // Rethrow the exception
+            }
+        }
+
     }
 }
