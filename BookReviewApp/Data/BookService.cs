@@ -14,13 +14,11 @@ namespace BookReviewApp.Data
         {
             _httpClient = httpClient;
         }
-
         public async Task<List<Book>> GetBooksAsync()
         {
             // Replace the endpoint with the actual URL of your books API
             return await _httpClient.GetFromJsonAsync<List<Book>>("https://localhost:7115/api/Book/books");
         }
-
         public async Task<Book> GetRandomBook()
         {
             try
@@ -34,6 +32,10 @@ namespace BookReviewApp.Data
                 throw; // Rethrow the exception
             }
         }
-
+        public async Task<Book> GetBookFromId(int id)
+        {
+            // Replace the endpoint with the actual URL of your books API
+            return await _httpClient.GetFromJsonAsync<Book>("https://localhost:7115/api/Book/bookinfo?id=" + id);
+        }
     }
 }

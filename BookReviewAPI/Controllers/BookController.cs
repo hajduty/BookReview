@@ -62,7 +62,7 @@ namespace api.Controllers
 
             var dataAccess = new DbHelper();
 
-            Book book = dataAccess.GetData<Book>("Books", "BookID = @BookID", new { BookID = id });
+            Book book = dataAccess.GetData<Book>("Books", "Id = @Id", new { Id = id });
 
             // Return a 200 OK response with a message
             return Ok(book);
